@@ -1,9 +1,9 @@
 
-    import React from 'react'
+    import React,{Component}from 'react'
     import { Navbar,Nav } from 'react-bootstrap'
     import { Link } from 'react-router-dom'
 
-    class NavigationBar extends React.Component
+    export default class NavigationBar extends Component
     {
     render()
     {
@@ -26,4 +26,3 @@
 
 
 
-    export default NavigationBar
