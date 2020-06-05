@@ -13,8 +13,11 @@ import com.example.rest.model.Book;
 import com.example.rest.resource.Resource;
 import com.example.rest.service.BookService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 @RestController
 @RequestMapping("/books")
+@CrossOrigin(origins="http://localhost:3000")
 
 public class BookResourceImpl implements Resource<Book> {
 
