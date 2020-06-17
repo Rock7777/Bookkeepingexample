@@ -1,29 +1,64 @@
 import React,{ Component }from 'react'
 import {Card, Form, Button, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faPlusSquare,faSave} from '@fortawesome/free-solid-svg-icons';
+import {faPlusSquare,faSave,faUndo} from '@fortawesome/free-solid-svg-icons';
+import MyToast from './MyToast';
+import axios from 'axios';
 
 export default class AddBook extends Component
 {
 constructor(props) {
         super(props);
-        this.state = {title:'', author:'',  price:'', language:''};
-        this.bookChange = this.bookChange.bind(this);
-        this.submitBook = this.submitBook.bind(this);
-    }
 
-    submitBook(event) {
-        alert('Title: '+this.state.title+', Author: '+this.state.author+', Price: '+this.state.price+", Language: "+this.state.language);
+        this.state = this.initialState;
+        this.state.show = false;
+
+    }
+    initialState =
+    {
+       title:'', author:'',  price:'', language:''
+    }
+    resetBook = () =>
+    {
+            this.setState(() => this.initialState);
+      }
+
+    submitBook = event => {
         event.preventDefault();
+
+                const book = {
+                    title: this.state.title,
+                    author: this.state.author,
+                    price: this.state.price,
+                    language: this.state.language
+                };
+
+                axios.post("http://localhost:8080/books", book)
+                    .then(response => {
+                        if(response.data != null) {
+                            this.setState({"show":true});
+                            setTimeout(() => this.setState({"show":false}), 3000);
+                        } else {
+                            this.setState({"show":false});
+                        }
+                    });
+
+                this.setState(this.initialState);
+
         }
-         bookChange(event) {
+         bookChange = event => {
                 this.setState({
                     [event.target.name]:event.target.value
                 });
             }
 
             render() {
+            const {title, author, price, language} = this.state;
                 return (
+                <div>
+                    <div style={{"display":this.state.show ? "block" : null}}>
+                     <MyToast children = {{show:this.state.show, message:"Book Saved Successfully."}}/>
+                      </div>
                     <Card className={"border border-dark bg-dark text-white"}>
                         <Card.Header>
                             <FontAwesomeIcon icon={faPlusSquare} /> Add New Book
@@ -33,7 +68,7 @@ constructor(props) {
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="formGridTitle">
                                         <Form.Label>Title</Form.Label>
-                                        <Form.Control required
+                                        <Form.Control required autoComplete="off"
                                             type="test" name="title"
                                             value={this.state.title}
                                             onChange={this.bookChange}
@@ -42,7 +77,7 @@ constructor(props) {
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridAuthor">
                                         <Form.Label>Author</Form.Label>
-                                        <Form.Control required
+                                        <Form.Control required autoComplete="off"
                                             type="test" name="author"
                                             value={this.state.author}
                                             onChange={this.bookChange}
@@ -53,7 +88,7 @@ constructor(props) {
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="formGridPrice">
                                         <Form.Label>Price</Form.Label>
-                                        <Form.Control required
+                                        <Form.Control required autoComplete="off"
                                             type="test" name="price"
                                             value={this.state.price}
                                             onChange={this.bookChange}
@@ -62,7 +97,7 @@ constructor(props) {
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridLanguage">
                                         <Form.Label>Language</Form.Label>
-                                        <Form.Control required
+                                        <Form.Control required autoComplete="off"
                                             type="test" name="language"
                                             value={this.state.language}
                                             onChange={this.bookChange}
@@ -78,6 +113,7 @@ constructor(props) {
                             </Card.Footer>
                         </Form>
                     </Card>
+                    </div>
                 );
             }
 
