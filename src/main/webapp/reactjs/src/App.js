@@ -22,6 +22,7 @@ const marginTop = {
            <Route path = "/" exact component = {Welcome}/>
            <Route path = "/add" exact component = {AddBook}/>
            <Route path = "/list" exact component = {BookList}/>
+           <Route path="/edit/:id" exact component={AddBook}/>
           </Switch>
 
         </Col>
